@@ -1,6 +1,7 @@
 package com.example.class_studen.config;
 
 
+import com.example.class_studen.security.JwtSecurityFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.sql.DataSource;
 
@@ -17,12 +19,14 @@ import javax.sql.DataSource;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final DataSource dataSource;
+    private final JwtSecurityFilter jwtSecurityFilter;
+    //private final DataSource dataSource;
 
-    private final PasswordEncoder passwordEncoder;
+    //private final PasswordEncoder passwordEncoder;
 
 
-    /*@Autowired // todo:inMemoryAuthentication
+    // todo:inMemoryAuthentication
+    /*@Autowired
     public void authenticationManagerBuilder(AuthenticationManagerBuilder builder) throws Exception {
         builder.inMemoryAuthentication()
                 .withUser(passwordEncoder.encode("Husanboy"))
@@ -31,12 +35,13 @@ public class SecurityConfig {
                 .and().passwordEncoder(passwordEncoder);
     }*/
 
-    @Autowired // todo:jdbcAuthentication
+    // todo:jdbcAuthentication
+    /*@Autowired
     public void authenticationManagerBuilder(AuthenticationManagerBuilder builder) throws Exception {
         builder.jdbcAuthentication()
                 .dataSource(dataSource)
                 .passwordEncoder(passwordEncoder);
-    }
+    }*/
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -44,15 +49,17 @@ public class SecurityConfig {
                 .cors().disable()
                 .csrf().disable()
                 .authorizeHttpRequests()
-                .requestMatchers("/groups/**").permitAll()
-                .requestMatchers("/marks/**").permitAll()
-                .requestMatchers("/student/**").permitAll()
-                .requestMatchers("/subjects/**").permitAll()
-                .requestMatchers("/subTeach/**").permitAll()
-                .requestMatchers("/teachers/**").permitAll()
+                .requestMatchers(
+                "/groups/**",
+                "/marks/**",
+                "/student/**",
+                "/subjects/**",
+                "/subTeach/**",
+                "/teachers/**",
+                "/user/**").permitAll()
                 .anyRequest().authenticated()
-                .and().formLogin()
-                .and().build();
+                .and().addFilterBefore(jwtSecurityFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
 
     }
 }

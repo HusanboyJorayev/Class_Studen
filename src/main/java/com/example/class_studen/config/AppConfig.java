@@ -13,17 +13,12 @@ import javax.sql.DataSource;
 @Configuration
 public class AppConfig {
 
-    @Value(value = "${spring.datasource.url}")
+   /* @Value(value = "${spring.datasource.url}")
     private String url;
     @Value(value = "${spring.datasource.username}")
     private String username;
     @Value(value = "${spring.datasource.password}")
     private String password;
-
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 
     @Bean
     public DataSource dataSource() throws InstantiationException, IllegalAccessException {
@@ -35,5 +30,10 @@ public class AppConfig {
 
         return source;
 
+    }*/
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 }
